@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel to HTML</title>
+</head>
+<body>
+    <h1>Upload Excel File</h1>
+    <form id="uploadForm" action="/generate" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".xlsx"><br>
+        Sheet Name: <input type="text" name="sheet_name"><br>
+        <input type="submit" value="Generate HTML">
+    </form>
+    
+    <div id="result" style="display: none;">
+        <h2>Result</h2>
+        <div id="resultTable"></div>
+        <button onclick="downloadResult()">Download Result</button>
+    </div>
+
+    <script>
+        function downloadResult() {
+            fetch('/download')
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'result.txt';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => console.error('Error downloading result:', error));
+        }
+    </script>
+</body>
+</html>
